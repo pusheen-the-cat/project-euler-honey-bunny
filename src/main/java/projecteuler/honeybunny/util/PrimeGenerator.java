@@ -1,5 +1,7 @@
 package projecteuler.honeybunny.util;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,5 +35,34 @@ public class PrimeGenerator {
         }
         // Cannot be reached
         return true;
+    }
+
+    public Iterator<Long> primeIterator() {
+        return new Iterator<>() {
+            private LinkedList<Long> existingPrimes = new LinkedList<>();
+
+            /**
+             * Always returns true because (as far as we know)
+             * there are infinite Prime Numbers.
+             */
+            @Override
+            public boolean hasNext() {
+                return true;
+            }
+
+            @Override
+            public Long next() {
+                if (existingPrimes.isEmpty()) {
+                    existingPrimes.add(2L);
+                } else {
+                    long i = existingPrimes.getLast() + 1;
+                    while (!isPrime(existingPrimes, i)) {
+                        i++;
+                    }
+                    existingPrimes.add(i);
+                }
+                return existingPrimes.getLast();
+            }
+        };
     }
 }

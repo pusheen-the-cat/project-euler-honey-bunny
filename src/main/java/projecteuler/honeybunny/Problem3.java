@@ -19,6 +19,31 @@ public class Problem3 {
 
     public static void main(String[] args) {
         PrimeGenerator primeGenerator = new PrimeGenerator();
+        // firstMethod(primeGenerator);
+        iteratorMethod(primeGenerator);
+    }
+
+    private static void iteratorMethod(PrimeGenerator primeGenerator) {
+        Iterator<Long> iterator = primeGenerator.primeIterator();
+
+        long currentPrime = 0l;
+        long unfactoredValue = TARGET;
+        while (unfactoredValue > 1) {
+            currentPrime = iterator.next();
+            unfactoredValue = factorOutPrimeNumber(unfactoredValue, currentPrime);
+        }
+
+        System.out.println("Iterator solution: " + currentPrime);
+    }
+
+    private static long factorOutPrimeNumber(long unfactoredValue, long primeNumber) {
+        while (unfactoredValue % primeNumber == 0) {
+            unfactoredValue = unfactoredValue / primeNumber;
+        }
+        return unfactoredValue;
+    }
+
+    private static void firstMethod(PrimeGenerator primeGenerator) {
         LinkedList<Long> primeNumbers =  primeGenerator.primesUpTo((long) Math.sqrt(600851475143L));
 
         for (Iterator<Long> it = primeNumbers.descendingIterator(); it.hasNext(); ) {
