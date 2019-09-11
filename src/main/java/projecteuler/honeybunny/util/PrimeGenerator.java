@@ -6,6 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class PrimeGenerator {
+    public static PrimeGenerator get() {
+        return new PrimeGenerator();
+    }
+
     public LinkedList<Long> primesUpTo(long max) {
         LinkedList<Long> existingPrimes = new LinkedList<>();
 
