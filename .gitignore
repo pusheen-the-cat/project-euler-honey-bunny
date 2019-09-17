@@ -29,5 +29,6 @@ hs_err_pid*
 
 # idea and maven
 .idea
-.idea/*
+.idea/
 .project
+/.idea/
