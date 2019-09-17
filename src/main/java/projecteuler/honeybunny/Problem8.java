@@ -1,5 +1,8 @@
 package projecteuler.honeybunny;
 
+import projecteuler.honeybunny.util.BestProductHelper;
+import projecteuler.honeybunny.util.ListSplitter;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -37,48 +40,28 @@ import java.util.stream.Collectors;
  */
 public class Problem8 {
     public static void main(String[] args) throws Exception {
-        String input = Files.lines(Path.of("src/main/java/projecteuler/honeybunny/resources/Problem8Input"))
-                .collect(Collectors.joining(""));
+        List<Integer> input = Files.lines(Path.of("src/main/java/projecteuler/honeybunny/resources/Problem8Input"))
+                .flatMap(line -> toIntList(line).stream())
+                .collect(Collectors.toList());
 
+        ListSplitter<Integer> splitter = new ListSplitter<>();
         // 0 creates a 0 product. Only check against subsets where 0 is not found
-        String[] zeroDelimitedValues = input.split("0");
+        List<List<Integer>> zeroDelimitedValues = splitter.splitList(input, 0);
 
-        long best = Arrays.stream(zeroDelimitedValues)
-                .filter(s -> s.length() >= 13) // If the size is less than 13, then the product would have been 0
-                .mapToLong(Problem8::getBestProductOf13)
+        BestProductHelper bestProductHelper = new BestProductHelper();
+        long best = zeroDelimitedValues.stream()
+                .filter(v -> v.size() >= 13) // If the size is less than 13, then the product would have been 0
+                .mapToLong(list -> bestProductHelper.getBestProduct(list, 13))
                 .max()
                 .getAsLong();
 
         System.out.println("Best Product: " + best);
     }
 
-    /**
-     * Sliding window implementation where we divide out the number that
-     * falls out of the window and multiple the new number to create the next segment.
-     */
-    private static long getBestProductOf13(String input) {
-        List<Integer> ints = input.chars()
+    private static List<Integer> toIntList(String input) {
+        return input.chars()
                 .map(Character::getNumericValue)
                 .boxed()
                 .collect(Collectors.toList());
-
-        long curProduct = getProductOfFirst13(ints);
-        long bestSoFar = curProduct;
-
-        for (int tail = 0, next = 13; next < ints.size(); next++, tail++) {
-            curProduct = (curProduct / ints.get(tail)) * ints.get(next);
-            if (curProduct > bestSoFar) {
-                bestSoFar = curProduct;
-            }
-        }
-        return bestSoFar;
-    }
-
-    private static long getProductOfFirst13(List<Integer> input) {
-        long product = 1;
-        for (int i = 0; i < 13; i++) {
-            product = product * input.get(i);
-        }
-        return product;
     }
 }
